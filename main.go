@@ -4,16 +4,16 @@ import (
 	"flag"
 	"fmt"
 	"gohub/bootstrap"
-	btsConfig "gohub/config"
+	_ "gohub/config"
 	"gohub/pkg/config"
 
 	"github.com/gin-gonic/gin"
 )
 
-func init() {
-	// 初始化配置信息
-	btsConfig.Initialize()
-}
+// func init() {
+// 	// 初始化配置信息
+// 	btsConfig.Initialize()
+// }
 
 func main() {
 	// 初始化配置，使用命令行 --env 参数
@@ -24,6 +24,9 @@ func main() {
 
 	// new 一个 Gin Engine 实例
 	router := gin.New()
+
+	// 初始化 DB
+	bootstrap.SetupDB()
 
 	// 初始化路由绑定
 	bootstrap.SetupRoute(router)
