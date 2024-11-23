@@ -14,9 +14,10 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+// Logger 全局日志实例
 var Logger *zap.Logger
 
-// InitLogger 初始化日志
+// InitLogger 日志初始化
 func InitLogger(filename string, maxSize, maxBackup, maxAge int, compress bool, logType string, level string) {
 	// 获取日志写入介质
 	writeSyncer := getLogWriter(filename, maxSize, maxBackup, maxAge, compress, logType)
@@ -27,14 +28,15 @@ func InitLogger(filename string, maxSize, maxBackup, maxAge int, compress bool, 
 		fmt.Println("日志初始化错误，日志级别设置有误。请修改 config/log.go 文件中的 log.level 配置项")
 	}
 
-	// 初始化 core 对象
+	// 初始化 core
 	core := zapcore.NewCore(getEncoder(), writeSyncer, logLevel)
 
 	// 初始化 Logger 对象
 	Logger = zap.New(core,
 		zap.AddCaller(),                       // 调用文件和行号，内部使用 runtime.Caller
 		zap.AddCallerSkip(1),                  // 封装了一层，调用文件去除一层(runtime.Caller(1))
-		zap.AddStacktrace(zapcore.ErrorLevel)) // Error 时才会显示 stacktrace
+		zap.AddStacktrace(zapcore.ErrorLevel), // Error 时才会显示 stacktrace
+	)
 
 	// 将自定义的 Logger 对象赋值给全局变量
 	// zap.L().Fatal() 调用时，就会使用我们自定的 Logger
@@ -42,7 +44,7 @@ func InitLogger(filename string, maxSize, maxBackup, maxAge int, compress bool, 
 }
 
 func getEncoder() zapcore.Encoder {
-	// 配置日志输出格式
+	// 日志格式规则
 	encoderConfig := zapcore.EncoderConfig{
 		TimeKey:        "time",
 		LevelKey:       "level",
@@ -58,6 +60,7 @@ func getEncoder() zapcore.Encoder {
 		EncodeCaller:   zapcore.ShortCallerEncoder,     // Caller 短格式，如：types/converter.go:17，长格式为绝对路径
 	}
 
+	// 本地环境配置
 	if app.IsLocal() {
 		// 终端输出的关键词高亮
 		encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
@@ -65,7 +68,7 @@ func getEncoder() zapcore.Encoder {
 		return zapcore.NewConsoleEncoder(encoderConfig)
 	}
 
-	// 生产环境设置 JSON 解码器
+	// 线上环境使用 JSON 编码器
 	return zapcore.NewJSONEncoder(encoderConfig)
 }
 
@@ -73,6 +76,7 @@ func customTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 	enc.AppendString(t.Format("2006-01-02 15:04:05"))
 }
 
+// getLogWriter 配置日志输出介质
 func getLogWriter(filename string, maxSize, maxBackup, maxAge int, compress bool, logType string) zapcore.WriteSyncer {
 	// 如果配置了按照日期记录日志
 	if logType == "daily" {
@@ -91,6 +95,7 @@ func getLogWriter(filename string, maxSize, maxBackup, maxAge int, compress bool
 
 	// 配置输出介质
 	if app.IsLocal() {
+		// 本地开发终端打印和记录文件
 		return zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(lumberJackLogger))
 	} else {
 		// 生产环境只记录文件

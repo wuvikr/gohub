@@ -5,14 +5,16 @@ import (
 	"gohub/pkg/logger"
 )
 
+// SetupLogger 初始化 Logger
 func SetupLogger() {
+
 	logger.InitLogger(
-		config.GetString("logger.filename"),
-		config.GetInt("logger.max_size"),
-		config.GetInt("logger.max_backup"),
-		config.GetInt("logger.max_age"),
-		config.GetBool("logger.compress"),
-		config.GetString("logger.log_type"),
-		config.GetString("logger.level"),
+		config.GetString("log.filename"),
+		config.GetInt("log.max_size"),
+		config.GetInt("log.max_backup"),
+		config.GetInt("log.max_age"),
+		config.GetBool("log.compress"),
+		config.GetString("log.type"),
+		config.GetString("log.level"),
 	)
 }
