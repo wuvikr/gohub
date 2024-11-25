@@ -24,7 +24,7 @@ func registerGlobalMiddleWare(router *gin.Engine) {
 	// 全局中间件配置
 	router.Use(
 		middlewares.Logger(),
-		gin.Recovery(),
+		middlewares.Recovery(),
 	)
 }
 
