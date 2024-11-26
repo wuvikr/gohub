@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gohub/pkg/config"
 	"gohub/pkg/database"
+	"gohub/pkg/logger"
 	"time"
 
 	"gohub/app/models/user"
@@ -12,7 +13,6 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 func SetupDB() {
@@ -40,7 +40,7 @@ func SetupDB() {
 	}
 
 	// 连接数据库，并设置 GORM 日志模式
-	database.Connect(dbConfig, logger.Default.LogMode(logger.Info))
+	database.Connect(dbConfig, logger.NewGormLogger())
 
 	// 设置最大连接数
 	database.SQLDB.SetMaxIdleConns(config.GetInt("database.mysql.max_open_connections"))
