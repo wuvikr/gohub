@@ -43,6 +43,9 @@ func main() {
 	// 初始化路由绑定
 	bootstrap.SetupRoute(router)
 
+	// logger.Dump(captcha.NewCaptcha().VerifyCaptcha("QQHzXcNTZyBOF6D7QrZn", "684002"), "正确答案")
+	// logger.Dump(captcha.NewCaptcha().VerifyCaptcha("QQHzXcNTZyBOF6D7QrZn", "684x02"), "错误答案")
+
 	// 运行服务
 	err := router.Run(":" + config.Get("app.port"))
 
