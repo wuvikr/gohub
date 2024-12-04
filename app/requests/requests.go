@@ -34,6 +34,7 @@ func Validate(c *gin.Context, obj interface{}, handler ValidatorFunc) bool {
 
 }
 
+// validate 创建一个验证器
 func validate(data interface{}, rules govalidator.MapData, messages govalidator.MapData) url.Values {
 	// 配置验证规则和参数
 	opts := govalidator.Options{

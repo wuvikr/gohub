@@ -2,9 +2,11 @@ package auth
 
 import (
 	v1 "gohub/app/http/controllers/api/v1"
+	"gohub/app/requests"
 	"gohub/pkg/captcha"
 	"gohub/pkg/logger"
 	"gohub/pkg/response"
+	"gohub/pkg/verifycode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,4 +26,19 @@ func (vc *VerifyCodeController) ShowCaptcha(c *gin.Context) {
 		"captcha_id":  id,
 		"captcha_img": b64s,
 	})
+}
+
+func (vc *VerifyCodeController) SendUsingPhone(c *gin.Context) {
+	// 1. 验证表单
+	request := requests.VerifyCodePhoneRequest{}
+	if ok := requests.Validate(c, &request, requests.VerifyCodePhone); !ok {
+		return
+	}
+
+	// 2. 发送短信验证码
+	if ok := verifycode.NewVerifyCode().SendSMS(request.Phone); !ok {
+		response.Abort500(c, "发送短信失败，请稍后再试")
+	} else {
+		response.Success(c)
+	}
 }

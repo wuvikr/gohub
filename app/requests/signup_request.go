@@ -11,6 +11,7 @@ type SignupPhoneExistRequest struct {
 	Phone string `json:"phone,omitempty" valid:"phone"`
 }
 
+// ValidateSignupPhoneExist 验证手机号是否存在
 func ValidateSignupPhoneExist(data interface{}, c *gin.Context) url.Values {
 	// 自定义验证规则
 	rules := govalidator.MapData{
@@ -32,6 +33,7 @@ type SignupEmailExistRequest struct {
 	Email string `json:"email,omitempty" valid:"email"`
 }
 
+// ValidateSignupEmailExist 验证邮箱是否存在
 func ValidateSignupEmailExist(data interface{}, c *gin.Context) url.Values {
 	// 自定义验证规则
 	rules := govalidator.MapData{

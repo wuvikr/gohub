@@ -6,7 +6,6 @@ import (
 	"gohub/bootstrap"
 	_ "gohub/config"
 	"gohub/pkg/config"
-	"gohub/pkg/sms"
 
 	"github.com/gin-gonic/gin"
 )
@@ -44,13 +43,15 @@ func main() {
 	// 初始化路由绑定
 	bootstrap.SetupRoute(router)
 
+	// 测试图片验证码
 	// logger.Dump(captcha.NewCaptcha().VerifyCaptcha("QQHzXcNTZyBOF6D7QrZn", "684002"), "正确答案")
 	// logger.Dump(captcha.NewCaptcha().VerifyCaptcha("QQHzXcNTZyBOF6D7QrZn", "684x02"), "错误答案")
 
-	sms.NewSMS().Send("17717817438", sms.Message{
-		Template: config.GetString("sms.aliyun.template_code"),
-		Data:     map[string]string{"code": "666999"},
-	})
+	// 测试短信发送功能
+	// sms.NewSMS().Send("17717817438", sms.Message{
+	// 	Template: config.GetString("sms.aliyun.template_code"),
+	// 	Data:     map[string]string{"code": "666999"},
+	// })
 
 	// 运行服务
 	err := router.Run(":" + config.Get("app.port"))
