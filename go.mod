@@ -8,7 +8,9 @@ require (
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.10
 	github.com/alibabacloud-go/dysmsapi-20170525/v4 v4.1.0
 	github.com/alibabacloud-go/tea v1.2.2
+	github.com/alibabacloud-go/tea-utils/v2 v2.0.6
 	github.com/gin-gonic/gin v1.10.0
+	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/mojocn/base64Captcha v1.3.6
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/redis/go-redis/v9 v9.7.0
@@ -28,7 +30,6 @@ require (
 	github.com/alibabacloud-go/endpoint-util v1.1.0 // indirect
 	github.com/alibabacloud-go/openapi-util v0.1.0 // indirect
 	github.com/alibabacloud-go/tea-utils v1.3.1 // indirect
-	github.com/alibabacloud-go/tea-utils/v2 v2.0.6 // indirect
 	github.com/alibabacloud-go/tea-xml v1.1.3 // indirect
 	github.com/aliyun/credentials-go v1.3.10 // indirect
 	github.com/bytedance/sonic v1.11.6 // indirect
