@@ -8,6 +8,6 @@ type BaseModel struct {
 }
 
 type CommonTimestampsField struct {
-	CreatedAT time.Time `gorm:"column:created_at;index;" json:"created_at,omitempty"`
-	UpdatedAT time.Time `gorm:"column:updated_at;index;" json:"updated_at,omitempty"`
+	CreatedAT time.Time `gorm:"column:created_at;index;autoCreateTime" json:"created_at,omitempty"`
+	UpdatedAT time.Time `gorm:"column:updated_at;index;autoUpdateTime" json:"updated_at,omitempty"`
 }
