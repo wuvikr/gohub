@@ -61,7 +61,7 @@ type SignupUsingPhoneRequest struct {
 	VerifyCode      string `json:"verify_code,omitempty" valid:"verify_code"`
 	Name            string `json:"name" valid:"name"`
 	Password        string `json:"password,omitempty" valid:"password"`
-	PasswordConfirm string `json:"password_confirm,omitempty"`
+	PasswordConfirm string `json:"password_confirm,omitempty" valid:"password_confirm"`
 }
 
 func SignupUsingPhone(data interface{}, c *gin.Context) url.Values {

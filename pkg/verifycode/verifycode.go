@@ -53,8 +53,8 @@ func (vc *VerifyCode) SendSMS(phone string) bool {
 func (vc *VerifyCode) CheckAnswer(key, answer string) bool {
 	logger.DebugJSON("VerifyCode", "用户输入的验证码", map[string]string{"key": key, "answer": answer})
 
-	if !app.IsProduction() && (strings.HasPrefix(key, config.GetString("verifycode.debug_phone_prefix")) ||
-		strings.HasPrefix(key, config.GetString("verifycode.debug_code_prefix"))) {
+	// 方便开发，在非生产环境下，具备特殊前缀的手机号和 Email后缀，会直接验证成功
+	if !app.IsProduction() && (strings.HasSuffix(key, config.GetString("verifycode.debug_email_suffix")) || strings.HasPrefix(key, config.GetString("verifycode.debug_phone_prefix"))) {
 		return true
 	}
 	return vc.Store.Verify(key, answer, false)
