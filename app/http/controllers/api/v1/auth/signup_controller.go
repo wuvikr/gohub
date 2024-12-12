@@ -4,6 +4,7 @@ import (
 	v1 "gohub/app/http/controllers/api/v1"
 	"gohub/app/models/user"
 	"gohub/app/requests"
+	"gohub/pkg/jwt"
 	"gohub/pkg/response"
 
 	"github.com/gin-gonic/gin"
@@ -40,6 +41,7 @@ func (sc *SignupController) IsEmailExist(c *gin.Context) {
 	})
 }
 
+// SignupUsingPhone 使用手机和验证码进行注册
 func (sc *SignupController) SignupUsingPhone(c *gin.Context) {
 	// 1. 验证表单
 	request := requests.SignupUsingPhoneRequest{}
@@ -56,8 +58,10 @@ func (sc *SignupController) SignupUsingPhone(c *gin.Context) {
 	_user.Create()
 
 	if _user.ID > 0 {
+		token := jwt.NewJWT().IssueToken(_user.GetStringID(), _user.Name)
 		response.CreatedJSON(c, gin.H{
-			"data": _user,
+			"data":  _user,
+			"token": token,
 		})
 	} else {
 		response.Abort500(c, "创建用户失败, 请稍后再试")
@@ -65,6 +69,7 @@ func (sc *SignupController) SignupUsingPhone(c *gin.Context) {
 
 }
 
+// SignupUsingEmail 使用 Email 注册
 func (sc *SignupController) SignupUsingEmail(c *gin.Context) {
 	// 1. 验证表单
 	request := requests.SignupUsingEmailRequest{}
@@ -81,8 +86,10 @@ func (sc *SignupController) SignupUsingEmail(c *gin.Context) {
 	_user.Create()
 
 	if _user.ID > 0 {
+		token := jwt.NewJWT().IssueToken(_user.GetStringID(), _user.Name)
 		response.CreatedJSON(c, gin.H{
-			"data": _user,
+			"data":  _user,
+			"token": token,
 		})
 	} else {
 		response.Abort500(c, "创建用户失败, 请稍后再试")
