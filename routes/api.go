@@ -33,6 +33,8 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			authGroup.POST("/login/using-phone", lgc.LoginByPhone)
 			// 使用账号密码进行登录， 支持手机号，邮箱和用户名
 			authGroup.POST("/login/using-password", lgc.LoginByPassword)
+			// 刷新 Token
+			authGroup.POST("/login/refresh-token", lgc.RefreshToken)
 
 		}
 

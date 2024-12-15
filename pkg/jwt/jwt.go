@@ -92,11 +92,11 @@ func (jwt *JWT) expireAtTime() int64 {
 	return timenow.Add(expire).Unix()
 }
 
-func (jwt *JWT) ParserToken(c *gin.Context) (string, error) {
+func (jwt *JWT) ParserToken(c *gin.Context) (*JWTCustomClaims, error) {
 	// 1. 从 Header 中获取 Token
 	tokenString, parseErr := jwt.getTokenFromHeader(c)
 	if parseErr != nil {
-		return "", parseErr
+		return nil, parseErr
 	}
 
 	// 2. 调用 jwt 库解析用户传参的 Token
@@ -105,27 +105,22 @@ func (jwt *JWT) ParserToken(c *gin.Context) (string, error) {
 	// 3. 解析出错
 	if err != nil {
 		validationErr, ok := err.(*jwtpkg.ValidationError)
-		// 满足 refresh 的情况，只是报错 ValidationErrorExpired
-		if !ok || validationErr.Errors != jwtpkg.ValidationErrorExpired {
-			return "", err
+		if ok {
+			if validationErr.Errors == jwtpkg.ValidationErrorMalformed {
+				return nil, ErrTokenMalformed
+			} else if validationErr.Errors == jwtpkg.ValidationErrorExpired {
+				return nil, ErrTokenExpired
+			}
 		}
-		return "", ErrTokenExpired
+		return nil, ErrTokenInvalid
 	}
 
 	// 4. 解析 JWTCustomClaims
-	claims := token.Claims.(*JWTCustomClaims)
-
-	// 5. 检查是否过了最大刷新时间
-	x := app.TimenowInTimezone().Add(-jwt.MaxRefresh).Unix()
-	if claims.IssuedAt > x {
-		// 修改过期时间
-		claims.StandardClaims.ExpiresAt = jwt.expireAtTime()
-		// 重新生成 Token
-		newToken, _ := jwt.createToken(*claims)
-		return newToken, nil
+	if claims, ok := token.Claims.(*JWTCustomClaims); ok && token.Valid {
+		return claims, nil
 	}
 
-	return "", ErrTokenExpiredMaxRefresh
+	return nil, ErrTokenInvalid
 }
 
 func (jwt *JWT) parseTokenString(tokenString string) (*jwtpkg.Token, error) {
@@ -151,4 +146,40 @@ func (jwt *JWT) getTokenFromHeader(c *gin.Context) (string, error) {
 		return "", ErrHeaderMalformed
 	}
 	return parts[1], nil
+}
+
+// RefreshToken 更新 Token，用以提供 refresh token 接口
+func (jwt *JWT) RefreshToken(c *gin.Context) (string, error) {
+	// 1. 从 Header 中获取 Token
+	tokenString, parseErr := jwt.getTokenFromHeader(c)
+	if parseErr != nil {
+		return "", parseErr
+	}
+
+	// 2. 调用 jwt 库解析用户传参的 Token
+	token, err := jwt.parseTokenString(tokenString)
+
+	// 3. 解析出错，未报错证明是合法的 Token（甚至未到过期时间）
+	if err != nil {
+		validationErr, ok := err.(*jwtpkg.ValidationError)
+		// 满足 refresh 的条件：只是单一的报错 ValidationErrorExpired
+		if !ok || validationErr.Errors != jwtpkg.ValidationErrorExpired {
+			return "", err
+		}
+	}
+
+	// 4. 解析 JWTCustomClaims
+	claims := token.Claims.(*JWTCustomClaims)
+
+	// 5. 检查是否过了最大刷新时间
+	x := app.TimenowInTimezone().Add(-jwt.MaxRefresh).Unix()
+	if claims.IssuedAt > x {
+		// 修改过期时间
+		claims.StandardClaims.ExpiresAt = jwt.expireAtTime()
+		// 重新生成 Token
+		return jwt.createToken(*claims)
+	}
+
+	return "", ErrTokenExpiredMaxRefresh
+
 }
