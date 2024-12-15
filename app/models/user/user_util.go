@@ -31,3 +31,10 @@ func GetByPhone(phone string) (user User) {
 	database.DB.Where("phone = ?", phone).First(&user)
 	return user
 }
+
+// Get 通过 id 获取用户
+func Get(idstr string) User {
+	var user User
+	database.DB.Where("id = ?", idstr).First(&user)
+	return user
+}

@@ -43,6 +43,15 @@ func main() {
 	// 初始化路由绑定
 	bootstrap.SetupRoute(router)
 
+	// 测试 JWT 中间件
+	// router.GET("/test_auth", middlewares.AuthJWT(), func(c *gin.Context) {
+	// 	userInstance := auth.CurrentUser(c)
+	// 	response.Data(c, userInstance)
+	// })
+	// router.GET("/test_guest", middlewares.GuestJWT(), func(c *gin.Context) {
+	// 	response.Success(c, "Hello guest")
+	// })
+
 	// 测试图片验证码
 	// logger.Dump(captcha.NewCaptcha().VerifyCaptcha("QQHzXcNTZyBOF6D7QrZn", "684002"), "正确答案")
 	// logger.Dump(captcha.NewCaptcha().VerifyCaptcha("QQHzXcNTZyBOF6D7QrZn", "684x02"), "错误答案")
