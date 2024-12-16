@@ -5,7 +5,7 @@ import "gohub/pkg/config"
 func init() {
 	config.Add("redis", func() map[string]interface{} {
 		return map[string]interface{}{
-			"host":     config.Env("REDIS_HOST", "192.168.1.191"),
+			"host":     config.Env("REDIS_HOST", "127.0.0.1"),
 			"port":     config.Env("REDIS_PORT", "6379"),
 			"username": config.Env("REDIS_USERNAME", "wuvikr"),
 			"password": config.Env("REDIS_PASSWORD", "Admin@098"),
