@@ -1,13 +1,15 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"gohub/app/cmd"
 	"gohub/bootstrap"
 	_ "gohub/config"
 	"gohub/pkg/config"
+	"gohub/pkg/console"
+	"os"
 
-	"github.com/gin-gonic/gin"
+	"github.com/spf13/cobra"
 )
 
 // func init() {
@@ -16,57 +18,38 @@ import (
 // }
 
 func main() {
-	// 初始化配置，使用命令行 --env 参数
-	var env string
-	flag.StringVar(&env, "env", "", "加载 .env 文件，如 --env=testing 加载的是 .env.testing 文件")
-	flag.Parse()
-	config.InitConfig(env)
+	// 应用入口，默认启动 cmd.CmdServe 命令
+	var rootCmd = &cobra.Command{
+		Use:   "Gohub",
+		Short: "A simple forum project",
+		Long:  `Default will run "serve" command, you can use "-h" flag to see all subcommands`,
 
-	// 初始化日志配置
-	bootstrap.SetupLogger()
+		PersistentPreRun: func(command *cobra.Command, args []string) {
+			// 初始化配置信息
+			config.InitConfig(cmd.Env)
 
-	// 设置 gin 的运行模式，支持 debug, release, test
-	// release 会屏蔽调试信息，官方建议生产环境中使用
-	// 非 release 模式 gin 终端打印太多信息，干扰到我们程序中的 Log
-	// 故此设置为 release，有特殊情况手动改为 debug 即可
-	gin.SetMode(gin.ReleaseMode)
+			// 初始化日志
+			bootstrap.SetupLogger()
 
-	// new 一个 Gin Engine 实例
-	router := gin.New()
+			// 初始化数据库
+			bootstrap.SetupDB()
 
-	// 初始化 DB
-	bootstrap.SetupDB()
-
-	// 初始化 Redis
-	bootstrap.SetupRedis()
-
-	// 初始化路由绑定
-	bootstrap.SetupRoute(router)
-
-	// 测试 JWT 中间件
-	// router.GET("/test_auth", middlewares.AuthJWT(), func(c *gin.Context) {
-	// 	userInstance := auth.CurrentUser(c)
-	// 	response.Data(c, userInstance)
-	// })
-	// router.GET("/test_guest", middlewares.GuestJWT(), func(c *gin.Context) {
-	// 	response.Success(c, "Hello guest")
-	// })
-
-	// 测试图片验证码
-	// logger.Dump(captcha.NewCaptcha().VerifyCaptcha("QQHzXcNTZyBOF6D7QrZn", "684002"), "正确答案")
-	// logger.Dump(captcha.NewCaptcha().VerifyCaptcha("QQHzXcNTZyBOF6D7QrZn", "684x02"), "错误答案")
-
-	// 测试短信发送功能
-	// sms.NewSMS().Send("17717817438", sms.Message{
-	// 	Template: config.GetString("sms.aliyun.template_code"),
-	// 	Data:     map[string]string{"code": "666999"},
-	// })
-
-	// 运行服务
-	err := router.Run(":" + config.Get("app.port"))
-
-	if err != nil {
-		fmt.Println(err.Error())
+			// 初始化 Redis
+			bootstrap.SetupRedis()
+		},
 	}
 
+	// 注册子命令
+	rootCmd.AddCommand(cmd.CmdServe)
+
+	// 配置默认运行 Web 服务
+	cmd.RegisterDefaultCmd(rootCmd, cmd.CmdServe)
+
+	// 注册全局标志
+	cmd.RegisterGlobalFlags(rootCmd)
+
+	// 执行主命令
+	if err := rootCmd.Execute(); err != nil {
+		console.Exit(fmt.Sprintf("Failed to run app command with %v: %s", os.Args, err.Error()))
+	}
 }
