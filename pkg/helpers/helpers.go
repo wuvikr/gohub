@@ -55,6 +55,7 @@ func RandomNumber(length int) string {
 	return string(b)
 }
 
+// RandomString 生成指定长度的随机字符串
 func RandomString(length int) string {
 	mathrand.New(mathrand.NewSource(time.Now().UnixNano()))
 	letters := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
