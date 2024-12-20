@@ -32,6 +32,7 @@ func init() {
 	// Add subcommands
 	CmdMake.AddCommand(
 		CmdMakeCMD,
+		CmdMakeModel,
 	)
 }
 
