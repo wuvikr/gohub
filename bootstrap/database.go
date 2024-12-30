@@ -8,8 +8,6 @@ import (
 	"gohub/pkg/logger"
 	"time"
 
-	"gohub/app/models/user"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -49,5 +47,5 @@ func SetupDB() {
 	// 设置每个连接的过期时间
 	database.SQLDB.SetConnMaxLifetime(time.Duration(config.GetInt("database.mysql.max_life_seconds")) * time.Second)
 
-	database.DB.AutoMigrate(&user.User{})
+	// database.DB.AutoMigrate(&user.User{})
 }

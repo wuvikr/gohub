@@ -3,6 +3,8 @@ package file
 import (
 	"errors"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 // Put 将数据写入文件
@@ -20,4 +22,8 @@ func Exist(path string) bool {
 		return false
 	}
 	return true
+}
+
+func FileNameWithoutExtension(fileName string) string {
+	return strings.TrimSuffix(fileName, filepath.Ext(fileName))
 }

@@ -1,7 +1,11 @@
 package migrate
 
 import (
+	"fmt"
+	"gohub/pkg/console"
 	"gohub/pkg/database"
+	"gohub/pkg/file"
+	"os"
 
 	"gorm.io/gorm"
 )
@@ -41,4 +45,89 @@ func (m *Migrator) createMigrationsTable() {
 	if !m.Migrator.HasTable(migration) {
 		m.Migrator.CreateTable(&migration)
 	}
+}
+
+func (m *Migrator) Up() {
+	// 获取所有的迁移文件
+	migrateFiles := m.readAllMigrationFiles()
+
+	// 获取当前批次的值
+	batch := m.getBatch()
+
+	// 获取 migrations 表中的所有记录
+	migrations := []Migration{}
+	m.DB.Find(&migrations)
+
+	// 通过这个参数来判断数据库是否已经最新
+	runed := false
+	for _, mfile := range migrateFiles {
+
+		if mfile.isNotMigrated(migrations) {
+			m.runUpMigration(mfile, batch)
+			runed = true
+		}
+	}
+
+	if !runed {
+		console.Success("database is up to date.")
+	}
+}
+
+func (m *Migrator) Down() {
+
+}
+
+func (m *Migrator) readAllMigrationFiles() []MigrationFile {
+	// 读取 database/migrations 目录下的所有文件
+	files, err := os.ReadDir(m.Folder)
+	console.ExitIf(err)
+
+	var migrateFiles []MigrationFile
+	for _, f := range files {
+		// 去除文件后缀
+		fileName := file.FileNameWithoutExtension(f.Name())
+
+		//
+		mfile := getMigrationFile(fileName)
+
+		if len(mfile.FileName) > 0 {
+			migrateFiles = append(migrateFiles, mfile)
+		}
+	}
+
+	return migrateFiles
+}
+
+// getBatch 获取当前批次的值
+func (m *Migrator) getBatch() int {
+	// 默认批次值为 1
+	batch := 1
+
+	// 获取 migrations 表中的最大批次值
+	lastMigration := Migration{}
+	m.DB.Order("id desc").First(&lastMigration)
+
+	// 如果有记录，则批次值加 1
+	if lastMigration.ID > 0 {
+		batch = lastMigration.Batch + 1
+	}
+
+	return batch
+}
+
+func (m *Migrator) runUpMigration(mfile MigrationFile, batch int) {
+
+	// 如果 Up 不为 nil，则执行迁移
+	if mfile.Up != nil {
+		// 提示信息
+		console.Warning(fmt.Sprintf("Migrating: %s", mfile.FileName))
+		// 执行迁移
+		mfile.Up(database.DB.Migrator(), database.SQLDB)
+		// 提示已迁移文件信息
+		console.Success(fmt.Sprintf("Migrated: %s", mfile.FileName))
+	}
+
+	// 记录迁移记录
+	err := m.DB.Create(&Migration{Migration: mfile.FileName, Batch: batch}).Error
+	console.ExitIf(err)
 }

@@ -1,10 +1,14 @@
 package migrate
 
-import "gorm.io/gorm"
+import (
+	"database/sql"
 
-type migrationFunc func(gorm.Migrator, *gorm.DB)
+	"gorm.io/gorm"
+)
 
-// MigrationFile 迁移单个文件
+type migrationFunc func(gorm.Migrator, *sql.DB)
+
+// MigrationFile 代表着单个迁移文件
 type MigrationFile struct {
 	Up       migrationFunc
 	Down     migrationFunc
@@ -21,4 +25,24 @@ func Add(name string, up, down migrationFunc) {
 		Down:     down,
 		FileName: name,
 	})
+}
+
+// getMigrationFile 通过迁移文件的名称来获取 MigrationFile 结构体对象
+func getMigrationFile(name string) MigrationFile {
+	for _, mfile := range migrationFiles {
+		if mfile.FileName == name {
+			return mfile
+		}
+	}
+	return MigrationFile{}
+}
+
+// isNotMigrated 判断迁移文件是否已经迁移过
+func (mfile MigrationFile) isNotMigrated(migrations []Migration) bool {
+	for _, migration := range migrations {
+		if migration.Migration == mfile.FileName {
+			return false
+		}
+	}
+	return true
 }
