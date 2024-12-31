@@ -27,17 +27,17 @@ func Add(name string, up, down migrationFunc) {
 	})
 }
 
-// getMigrationFile 通过迁移文件的名称来获取 MigrationFile 结构体对象
+// getMigrationFile 通过迁移文件的名称来获取到 MigrationFile 对象
 func getMigrationFile(name string) MigrationFile {
 	for _, mfile := range migrationFiles {
-		if mfile.FileName == name {
+		if name == mfile.FileName {
 			return mfile
 		}
 	}
 	return MigrationFile{}
 }
 
-// isNotMigrated 判断迁移文件是否已经迁移过
+// isNotMigrated 判断迁移是否已执行
 func (mfile MigrationFile) isNotMigrated(migrations []Migration) bool {
 	for _, migration := range migrations {
 		if migration.Migration == mfile.FileName {

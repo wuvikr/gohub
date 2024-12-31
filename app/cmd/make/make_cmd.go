@@ -22,7 +22,7 @@ func runMakeCMD(cmd *cobra.Command, args []string) {
 	filepath := fmt.Sprintf("app/cmd/%s.go", model.PackageName)
 
 	// 从模板文件创建文件
-	createFileFromStud(filepath, "cmd", model)
+	createFileFromStub(filepath, "cmd", model)
 
 	// 友好提示
 	console.Success("command name: " + model.StructName)

@@ -21,5 +21,5 @@ func runMakeRequest(cmd *cobra.Command, args []string) {
 	filepath := fmt.Sprintf("app/http/requests/%s_request.go", model.TbaleName)
 
 	// 生成文件
-	createFileFromStud(filepath, "request", model)
+	createFileFromStub(filepath, "request", model)
 }

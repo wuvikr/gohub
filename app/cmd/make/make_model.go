@@ -23,7 +23,7 @@ func runMakeModel(cmd *cobra.Command, args []string) {
 	os.MkdirAll(dir, os.ModePerm)
 
 	// 替换变量
-	createFileFromStud(dir+model.PackageName+"_model.go", "model/model", model)
-	createFileFromStud(dir+model.PackageName+"_util.go", "model/model_util", model)
-	createFileFromStud(dir+model.PackageName+"_hooks.go", "model/model_hooks", model)
+	createFileFromStub(dir+model.PackageName+"_model.go", "model/model", model)
+	createFileFromStub(dir+model.PackageName+"_util.go", "model/model_util", model)
+	createFileFromStub(dir+model.PackageName+"_hooks.go", "model/model_hooks", model)
 }

@@ -18,8 +18,19 @@ var CmdMigrateUp = &cobra.Command{
 	Run:   runUp,
 }
 
+var CmdMigrateRollback = &cobra.Command{
+	Use: "down",
+	// 设置别名 migrate down == migrate rollback
+	Aliases: []string{"rollback"},
+	Short:   "Reverse the up command",
+	Run:     runDown,
+}
+
 func init() {
-	CmdMigrate.AddCommand(CmdMigrateUp)
+	CmdMigrate.AddCommand(
+		CmdMigrateUp,
+		CmdMigrateRollback,
+	)
 }
 
 func migrator() *migrate.Migrator {
@@ -35,4 +46,12 @@ func runUp(cmd *cobra.Command, args []string) {
 
 	// 执行迁移
 	migrator.Up()
+}
+
+func runDown(cmd *cobra.Command, args []string) {
+	// 获取迁移器
+	migrator := migrator()
+
+	// 回滚迁移
+	migrator.Rollback()
 }

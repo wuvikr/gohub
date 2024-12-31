@@ -51,8 +51,8 @@ func makeModelFromString(name string) Model {
 	return model
 }
 
-// createFileFromStud 从模板文件创建文件
-func createFileFromStud(filePath string, stubName string, model Model, variables ...interface{}) {
+// createFileFromStub 从模板文件创建文件
+func createFileFromStub(filePath string, stubName string, model Model, variables ...interface{}) {
 
 	// 实现最后一个参数可选
 	replaces := make(map[string]string)
