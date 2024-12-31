@@ -167,3 +167,22 @@ func (m *Migrator) runUpMigration(mfile MigrationFile, batch int) {
 	err := m.DB.Create(&Migration{Migration: mfile.FileName, Batch: batch}).Error
 	console.ExitIf(err)
 }
+
+// Reset 回滚所有迁移
+func (m *Migrator) Reset() {
+	migrations := []Migration{}
+
+	// 倒序获取 migrations 表中的所有记录
+	m.DB.Order("id desc").Find(&migrations)
+
+	// 回滚所有迁移
+	if !m.rollbackMigrations(migrations) {
+		console.Success("[migrations] table is empty, nothing to reset.")
+	}
+}
+
+// Refresh 重置并重新执行迁移
+func (m *Migrator) Refresh() {
+	m.Reset()
+	m.Up()
+}
