@@ -12,7 +12,7 @@ import (
 )
 
 type Model struct {
-	TbaleName          string
+	TableName          string
 	StructName         string
 	StructNamePlural   string
 	VariableName       string
@@ -37,6 +37,7 @@ func init() {
 		CmdMakeRequest,
 		CmdMakeMigration,
 		CmdMakeFactory,
+		CmdMakeSeeder,
 	)
 }
 
@@ -45,7 +46,7 @@ func makeModelFromString(name string) Model {
 	model := Model{}
 	model.StructName = str.Singular(strcase.ToCamel(name))
 	model.StructNamePlural = str.Plural(model.StructName)
-	model.TbaleName = str.Snake(str.Plural(name))
+	model.TableName = str.Snake(str.Plural(name))
 	model.VariableName = str.LowerCamel(model.StructName)
 	model.VariableNamePlural = str.LowerCamel(model.StructNamePlural)
 	model.PackageName = str.Snake(model.StructName)
@@ -78,7 +79,7 @@ func createFileFromStub(filePath string, stubName string, model Model, variables
 	replaces["{{VariableNamePlural}}"] = model.VariableNamePlural
 	replaces["{{StructName}}"] = model.StructName
 	replaces["{{StructNamePlural}}"] = model.StructNamePlural
-	replaces["{{TbaleName}}"] = model.TbaleName
+	replaces["{{TableName}}"] = model.TableName
 	replaces["{{PackageName}}"] = model.PackageName
 
 	// 对模板进行替换

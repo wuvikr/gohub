@@ -1,8 +1,8 @@
 package cmd
 
 import (
+	"gohub/database/seeders"
 	"gohub/pkg/console"
-	"gohub/pkg/database/seeders"
 	"gohub/pkg/seed"
 
 	"github.com/spf13/cobra"
@@ -29,6 +29,6 @@ func runSeeders(cmd *cobra.Command, args []string) {
 	} else {
 		// 没有参数的情况，默认全部执行
 		seed.RunAll()
-		console.Success("Database seeded!")
+		console.Success("Done seeding!")
 	}
 }

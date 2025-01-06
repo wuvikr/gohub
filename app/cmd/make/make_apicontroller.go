@@ -28,7 +28,7 @@ func runMakeAPIController(cmd *cobra.Command, args []string) {
 	model := makeModelFromString(name)
 
 	// 组建目标路径
-	filepath := fmt.Sprintf("app/http/controllers/api/%s/%s_controller.go", apiVersion, model.TbaleName)
+	filepath := fmt.Sprintf("app/http/controllers/api/%s/%s_controller.go", apiVersion, model.TableName)
 
 	// 生成文件
 	createFileFromStub(filepath, "apicontroller", model)
