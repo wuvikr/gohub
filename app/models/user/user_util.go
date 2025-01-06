@@ -44,3 +44,8 @@ func Get(idstr string) User {
 	database.DB.Where("id = ?", idstr).First(&user)
 	return user
 }
+
+func All() (users []User) {
+	database.DB.Find(&users)
+	return
+}
