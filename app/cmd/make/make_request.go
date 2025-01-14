@@ -18,7 +18,7 @@ func runMakeRequest(cmd *cobra.Command, args []string) {
 	model := makeModelFromString(name)
 
 	// 组建目标路径
-	filepath := fmt.Sprintf("app/http/requests/%s_request.go", model.TableName)
+	filepath := fmt.Sprintf("app/requests/%s_request.go", model.TableName)
 
 	// 生成文件
 	createFileFromStub(filepath, "request", model)
