@@ -9,6 +9,7 @@ require (
 	github.com/alibabacloud-go/dysmsapi-20170525/v4 v4.1.0
 	github.com/alibabacloud-go/tea v1.2.2
 	github.com/alibabacloud-go/tea-utils/v2 v2.0.6
+	github.com/bxcodec/faker/v4 v4.0.0-beta.3
 	github.com/gertd/go-pluralize v0.2.1
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-faker/faker/v4 v4.5.0
