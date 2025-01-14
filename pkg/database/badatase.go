@@ -31,7 +31,7 @@ func Connect(dbConfig gorm.Dialector, _logger gormlogger.Interface) {
 	}
 }
 
-func Tablename(obj interface{}) string {
+func TableName(obj interface{}) string {
 	stmt := &gorm.Statement{DB: DB}
 	stmt.Parse(obj)
 	return stmt.Schema.Table
