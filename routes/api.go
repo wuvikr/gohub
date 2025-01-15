@@ -89,6 +89,9 @@ func RegisterAPIRoutes(r *gin.Engine) {
 
 			// 话题列表
 			tpcGroup.GET("", tpc.Index)
+
+			// 话题详情
+			tpcGroup.GET("/:id", tpc.Show)
 		}
 
 	}
