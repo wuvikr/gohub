@@ -75,5 +75,12 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			cgcGroup.DELETE("/:id", middlewares.AuthJWT(), cgc.Delete)
 		}
 
+		tpc := new(controllers.TopicsController)
+		tpcGroup := v1.Group("/topics")
+		{
+			// 创建话题
+			tpcGroup.POST("", middlewares.AuthJWT(), tpc.Store)
+		}
+
 	}
 }

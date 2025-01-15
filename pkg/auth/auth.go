@@ -39,3 +39,7 @@ func CurrentUser(c *gin.Context) user.User {
 	}
 	return UserInstance
 }
+
+func CurrentUID(c *gin.Context) string {
+	return CurrentUser(c).GetStringID()
+}

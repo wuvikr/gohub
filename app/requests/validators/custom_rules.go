@@ -89,4 +89,33 @@ func init() {
 
 		return nil
 	})
+
+	// exists 自定义规则, 确保字段的值在数据库表中存在
+	govalidator.AddCustomRule("exists", func(field, rule, message string, value any) error {
+		rng := strings.Split(strings.TrimPrefix(rule, "exists:"), ",")
+
+		// 第一个参数，表名称，例如 users
+		tableName := rng[0]
+
+		// 第二个参数，字段名，例如 email
+		fieldName := rng[1]
+
+		reqValue := value.(string)
+
+		// 查询数据库
+		var count int64
+		database.DB.Table(tableName).Where(fieldName+" = ?", reqValue).Count(&count)
+
+		// 如果记录不存在则验证失败
+		if count == 0 {
+			// 如果设置了错误消息
+			if message != "" {
+				return errors.New(message)
+			}
+			// 默认错误消息
+			return fmt.Errorf("%v 不存在", reqValue)
+		}
+
+		return nil
+	})
 }
