@@ -86,6 +86,9 @@ func RegisterAPIRoutes(r *gin.Engine) {
 
 			// 删除话题
 			tpcGroup.DELETE("/:id", middlewares.AuthJWT(), tpc.Delete)
+
+			// 话题列表
+			tpcGroup.GET("", tpc.Index)
 		}
 
 	}

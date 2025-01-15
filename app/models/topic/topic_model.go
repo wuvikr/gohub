@@ -11,7 +11,7 @@ type Topic struct {
 	models.BaseModel
 
 	Title      string `json:"title,omitempty"`
-	Body       string `json:"body,omitempty"`
+	Body       string `json:"body,omitempty" gorm:"type:text"`
 	UserID     string `json:"user_id,omitempty"`
 	CategoryID string `json:"category_id,omitempty"`
 
