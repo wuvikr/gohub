@@ -70,6 +70,9 @@ func RegisterAPIRoutes(r *gin.Engine) {
 
 			// 分类列表
 			cgcGroup.GET("", cgc.Index)
+
+			// 删除分类
+			cgcGroup.DELETE("/:id", middlewares.AuthJWT(), cgc.Delete)
 		}
 
 	}

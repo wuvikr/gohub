@@ -71,3 +71,20 @@ func (ctrl *CategoriesController) Index(c *gin.Context) {
 		"pager": pager,
 	})
 }
+
+// Destroy 删除分类
+func (ctrl *CategoriesController) Delete(c *gin.Context) {
+	categoryModel := category.Get(c.Param("id"))
+	if categoryModel.ID == 0 {
+		response.Abort404(c)
+		return
+	}
+
+	// 删除分类
+	if rowsAffected := categoryModel.Delete(); rowsAffected > 0 {
+		response.Success(c)
+		return
+	}
+
+	response.Abort500(c, "删除失败，请稍后尝试~")
+}
