@@ -94,5 +94,11 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			tpcGroup.GET("/:id", tpc.Show)
 		}
 
+		lsc := new(controllers.LinksController)
+		linksGroup := v1.Group("/links")
+		{
+			linksGroup.GET("", lsc.Index)
+		}
+
 	}
 }
