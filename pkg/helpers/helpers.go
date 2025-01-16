@@ -10,7 +10,7 @@ import (
 )
 
 // Empty 判断 val 是否为空, 如果为空返回 true, 否则返回 false
-func Empty(val interface{}) bool {
+func Empty(val any) bool {
 	if val == nil {
 		return true
 	}
