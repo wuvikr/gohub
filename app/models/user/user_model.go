@@ -11,10 +11,13 @@ import (
 type User struct {
 	models.BaseModel
 
-	Name     string `json:"name,omitempty"`
-	Email    string `json:"email,omitempty"`
-	Phone    string `json:"-"`
-	Password string `json:"-"`
+	Name         string `json:"name,omitempty"`
+	City         string `json:"city,omitempty"`
+	Introduction string `json:"introduction,omitempty"`
+	Avatar       string `json:"avatar,omitempty"`
+	Email        string `json:"email,omitempty"`
+	Phone        string `json:"-"`
+	Password     string `json:"-"`
 
 	models.CommonTimestampsField
 }
