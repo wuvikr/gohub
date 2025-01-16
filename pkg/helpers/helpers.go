@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// Empty 判断 val 是否为空, 如果为空返回 true, 否则返回 false
 func Empty(val interface{}) bool {
 	if val == nil {
 		return true
