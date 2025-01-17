@@ -28,6 +28,7 @@ func (ctrl *TopicsController) Index(c *gin.Context) {
 	})
 }
 
+// Show 帖子详情
 func (ctrl *TopicsController) Show(c *gin.Context) {
 	topicModel := topic.Get(c.Param("id"))
 	if topicModel.ID == 0 {
@@ -37,6 +38,7 @@ func (ctrl *TopicsController) Show(c *gin.Context) {
 	response.Data(c, topicModel)
 }
 
+// Store 创建帖子
 func (ctrl *TopicsController) Store(c *gin.Context) {
 
 	request := requests.TopicRequest{}
@@ -58,6 +60,7 @@ func (ctrl *TopicsController) Store(c *gin.Context) {
 	}
 }
 
+// Update 更新帖子
 func (ctrl *TopicsController) Update(c *gin.Context) {
 
 	topicModel := topic.Get(c.Param("id"))
