@@ -71,3 +71,24 @@ func (ctrl *UsersController) UpdateEmail(c *gin.Context) {
 		response.Abort500(c, "更新失败，请稍后尝试~")
 	}
 }
+
+// UpdatePhone 更新用户手机号
+func (ctrl *UsersController) UpdatePhone(c *gin.Context) {
+	// 1. 表单验证
+	request := requests.UserUpdatePhoneRequest{}
+	if ok := requests.Validate(c, &request, requests.UserUpdatePhone); !ok {
+		return
+	}
+
+	// 2. 更新用户结构体信息
+	currentUser := auth.CurrentUser(c)
+	currentUser.Phone = request.Phone
+
+	// 3. 保存用户信息到数据库
+	rowsAffected := currentUser.Save()
+	if rowsAffected > 0 {
+		response.Success(c)
+	} else {
+		response.Abort500(c, "更新失败，请稍后尝试~")
+	}
+}
