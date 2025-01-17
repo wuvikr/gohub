@@ -64,6 +64,8 @@ func RegisterAPIRoutes(r *gin.Engine) {
 			usersGroup.PUT("/email", middlewares.AuthJWT(), uc.UpdateEmail)
 			// 更新用户手机号
 			usersGroup.PUT("/phone", middlewares.AuthJWT(), uc.UpdatePhone)
+			// 更新用户密码
+			usersGroup.PUT("/password", middlewares.AuthJWT(), uc.UpdatePassword)
 		}
 
 		cgc := new(controllers.CategoriesController)
